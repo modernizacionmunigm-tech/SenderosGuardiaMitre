@@ -260,19 +260,18 @@
     <script src="../js/main.js"></script>
     
     <script>
-        // Google Form: Monte Mitre – Registro de Tiempos (IDs desde el HTML público del formulario)
+        // Google Form: Monte Mitre – Registro de Tiempos
         const GOOGLE_FORMS_CONFIG = {
             formUrl: 'https://docs.google.com/forms/d/e/1FAIpQLSfzRfc2f-i8xmBMGfVbhDz4Nnxlt5hOfpK3Y4p3AE8D_iw0Pw/formResponse',
-            fbzx: '8064151695372825608',
             fieldIds: {
                 nombre: 'entry.969350065',
                 sendero: 'entry.49559792',
                 tiempo: 'entry.236869142',
-                fechaBase: 'entry.341045598',
-                horaBase: 'entry.1889950637',
+                fecha: 'entry.341045598',
+                hora: 'entry.1889950637',
                 clima: 'entry.1090869712',
                 comentarios: 'entry.1586715887',
-                terminos: 'entry.143314141'
+                terminos: 'entry.871715811'
             },
             senderoFormText: {
                 'monte-mitre-baja': 'Monte Mitre - Dificultad Baja',
@@ -398,58 +397,46 @@
                 throw new Error('Sendero no reconocido.');
             }
 
-            const payload = new FormData();
-            payload.append(ids.nombre, String(data.nombre).trim());
-            payload.append(ids.sendero, senderoText);
-            payload.append(ids.tiempo, String(data.tiempo).trim());
-            payload.append(ids.terminos, 'Acepto');
+            // Usamos URLSearchParams para asegurar compatibilidad total con Google Forms
+            const params = new URLSearchParams();
+            params.append(ids.nombre, String(data.nombre).trim());
+            params.append(ids.sendero, senderoText);
+            params.append(ids.tiempo, String(data.tiempo).trim());
+            params.append(ids.terminos, 'Acepto');
 
-            const fechaParts = String(data.fecha).split('-');
-            if (fechaParts.length === 3) {
-                const y = fechaParts[0];
-                const mo = fechaParts[1].padStart(2, '0');
-                const da = fechaParts[2].padStart(2, '0');
-                payload.append(ids.fechaBase + '_year', y);
-                payload.append(ids.fechaBase + '_month', mo);
-                payload.append(ids.fechaBase + '_day', da);
+            // Formatear fecha para el campo de fecha de Google (YYYY-MM-DD)
+            if (data.fecha) {
+                params.append(ids.fecha, data.fecha);
             }
 
             if (data.clima && GOOGLE_FORMS_CONFIG.climaFormText[data.clima]) {
-                payload.append(ids.clima, GOOGLE_FORMS_CONFIG.climaFormText[data.clima]);
+                params.append(ids.clima, GOOGLE_FORMS_CONFIG.climaFormText[data.clima]);
             }
             if (data.comentarios && String(data.comentarios).trim()) {
-                payload.append(ids.comentarios, String(data.comentarios).trim());
+                params.append(ids.comentarios, String(data.comentarios).trim());
             }
 
             const horaVal = data['hora-inicio'] && String(data['hora-inicio']).trim();
             if (horaVal) {
-                const hp = horaVal.split(':');
-                const h24 = parseInt(hp[0], 10);
-                const mi = parseInt(hp[1], 10);
-                if (Number.isFinite(h24) && Number.isFinite(mi)) {
-                    let h12 = h24 % 12;
-                    if (h12 === 0) h12 = 12;
-                    const ap = h24 >= 12 ? 'PM' : 'AM';
-                    payload.append(ids.horaBase + '_hour', String(h12));
-                    payload.append(ids.horaBase + '_minute', String(mi).padStart(2, '0'));
-                    payload.append(ids.horaBase + '_second', '0');
-                    payload.append(ids.horaBase, ap);
-                }
+                params.append(ids.hora, horaVal);
             }
 
-            if (GOOGLE_FORMS_CONFIG.fbzx) {
-                payload.append('fbzx', GOOGLE_FORMS_CONFIG.fbzx);
+            // Realizar la petición POST
+            try {
+                await fetch(GOOGLE_FORMS_CONFIG.formUrl, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    },
+                    body: params.toString()
+                });
+            } catch (e) {
+                // El error de CORS es esperado, pero si el fetch falla por red, lo capturamos
+                console.warn('Fetch finalizado (no-cors):', e);
             }
-            payload.append('pageHistory', '0');
-            payload.append('fvv', '1');
 
-            await fetch(GOOGLE_FORMS_CONFIG.formUrl, {
-                method: 'POST',
-                mode: 'no-cors',
-                body: payload
-            });
-
-            // Guardamos una copia local opcional para feedback inmediato (no es la fuente del ranking real)
+            // Guardamos una copia local opcional para feedback inmediato
             const nuevoRegistro = {
                 id: Utils.generateId(),
                 nombre: data.nombre,
