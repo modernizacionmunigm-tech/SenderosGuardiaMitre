@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Senderos Guardia Mitre - Monte Mitre</title>
+    <meta name="description" content="Explora los senderos Monte Mitre en Guardia Mitre, Río Negro. Mapas interactivos, ranking de tiempos y flora local.">
+    
+    <!-- Tailwind CSS para estilos rápidos y responsivos -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome para iconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Estilos personalizados -->
+    <link rel="stylesheet" href="css/estilos.css">
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#0EA5E9">
+    <link rel="apple-touch-icon" href="images/mi-logo.png">
+    
+    <!-- Configuración de Tailwind -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'naturaleza': '#0EA5E9',
+                        'rio': '#0284C7',
+                        'accion': '#F59E0B',
+                        'ranking': '#F97316',
+                        'naturaleza-claro': '#38BDF8',
+                        'rio-claro': '#7DD3FC'
+                    },
+                    fontFamily: {
+                        'sans': ['Inter', 'system-ui', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-green-50 font-sans">
+    <header class="site-header bg-gradient-to-r from-blue-400 to-blue-600 text-white shadow-lg">
+        <div class="container mx-auto px-4 py-4 sm:py-6">
+            <div class="flex items-center justify-between gap-3">
+                <a href="index.html" class="flex items-center space-x-3 sm:space-x-4 min-w-0 flex-1 rounded-lg text-white no-underline hover:opacity-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/70">
+                    <img src="images/mi-logo.png" alt="Logo Guardia Mitre" class="w-12 h-12 sm:w-16 sm:h-16 shrink-0 object-contain" width="64" height="64">
+                    <div class="min-w-0 text-left">
+                        <h1 class="text-lg sm:text-2xl font-bold leading-tight">Municipalidad de Guardia Mitre</h1>
+                        <p class="text-blue-100 text-xs sm:text-sm">Río Negro, Argentina</p>
+                    </div>
+                </a>
+                <button type="button" id="menu-toggle" class="menu-toggle-btn lg:hidden shrink-0 inline-flex items-center justify-center w-11 h-11 rounded-lg text-white hover:bg-white/15 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/70" aria-expanded="false" aria-controls="main-nav" aria-label="Menú de navegación">
+                    <span class="sr-only">Abrir o cerrar menú</span>
+                    <span class="relative inline-flex h-6 w-6 items-center justify-center">
+                        <i class="fas fa-bars text-xl menu-icon-open absolute" aria-hidden="true"></i>
+                        <i class="fas fa-times text-xl menu-icon-close hidden absolute" aria-hidden="true"></i>
+                    </span>
+                </button>
+            </div>
+            <nav id="main-nav" class="site-nav hidden lg:block mt-4 border-t border-white/20 lg:border-0 pt-4 lg:pt-0 lg:mt-4" aria-label="Principal">
+                <ul class="flex flex-col lg:flex-row lg:flex-wrap lg:items-center gap-1 lg:gap-0 lg:space-x-4 xl:space-x-6">
+                    <li><a href="index.html" class="nav-link">Inicio</a></li>
+                    <li><a href="senderos/index.html" class="nav-link">Senderos</a></li>
+                    <li><a href="mapa/index.html" class="nav-link">Mapa</a></li>
+                    <li><a href="tiempos/index.html" class="nav-link">Registrar Tiempo</a></li>
+                    <li><a href="ranking/index.html" class="nav-link">Ranking</a></li>
+                    <li><a href="flora/index.html" class="nav-link">Flora y Fauna</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Contenido principal -->
+    <main class="container mx-auto px-4 py-8">
+        <!-- Hero Section -->
+        <section class="text-center mb-12">
+            <div class="bg-white rounded-2xl shadow-lg p-8 mb-8">
+        <div class="max-w-4xl mx-auto">
+            <h2 class="text-4xl font-bold text-blue-600 mb-4">
+                Descubre los Senderos de Guardia Mitre
+            </h2>
+            <p class="text-lg text-gray-600 mb-6">
+                Explora la naturaleza de Río Negro a través de nuestros senderos turísticos. 
+                Registra tus tiempos, identifica flora y fauna, y comparte tu experiencia.
+            </p>
+            <div class="bg-blue-100 border-l-4 border-blue-500 p-4 mb-6 flex items-center justify-between">
+                <p class="text-blue-700 font-medium">
+                    <i class="fas fa-qrcode mr-2"></i>
+                    Escanea el código QR en los senderos para acceder rápidamente a esta información
+                </p>
+                <div id="clima-widget" class="hidden sm:flex items-center gap-3 text-blue-800 bg-white/50 px-4 py-2 rounded-full border border-blue-200 shadow-sm">
+                    <i id="clima-icono" class="fas fa-sun text-xl text-orange-500"></i>
+                    <span id="clima-temp" class="font-bold text-lg">--°C</span>
+                </div>
+            </div>
+        </div>
+            </div>
+        </section>
+
+        <!-- Secciones principales -->
+        <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+            <!-- Senderos -->
+            <div class="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow">
+                <div class="bg-blue-500 p-6">
+                    <i class="fas fa-hiking text-4xl text-white mb-3"></i>
+                    <h3 class="text-xl font-bold text-white">Senderos</h3>
+                </div>
+                <div class="p-6">
+                    <p class="text-gray-600 mb-4">
+                        Conoce todos los senderos disponibles con sus características, dificultad y recomendaciones.
+                    </p>
+                    <a href="senderos/index.html" class="btn btn-naturaleza">
+                        Explorar Senderos
+                        <i class="fas fa-arrow-right ml-2"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Mapa -->
+            <div class="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow">
+                <div class="bg-rio p-6">
+                    <i class="fas fa-map-marked-alt text-4xl text-white mb-3"></i>
+                    <h3 class="text-xl font-bold text-white">Mapa Interactivo</h3>
+                </div>
+                <div class="p-6">
+                    <p class="text-gray-600 mb-4">
+                        Visualiza los senderos en un mapa interactivo con puntos de interés y navegación GPS.
+                    </p>
+                    <a href="mapa/index.html" class="btn btn-rio">
+                        Ver Mapa
+                        <i class="fas fa-arrow-right ml-2"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Registrar Tiempo -->
+            <div class="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow">
+                <div class="bg-accion p-6">
+                    <i class="fas fa-stopwatch text-4xl text-white mb-3"></i>
+                    <h3 class="text-xl font-bold text-white">Registrar Tiempo</h3>
+                </div>
+                <div class="p-6">
+                    <p class="text-gray-600 mb-4">
+                        Registra tu tiempo de recorrido y compáralo con otros visitantes.
+                    </p>
+                    <a href="tiempos/index.html" class="btn btn-accion">
+                        Registrar
+                        <i class="fas fa-arrow-right ml-2"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Ranking -->
+            <div class="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow">
+                <div class="bg-ranking p-6">
+                    <i class="fas fa-trophy text-4xl text-white mb-3"></i>
+                    <h3 class="text-xl font-bold text-white">Ranking</h3>
+                </div>
+                <div class="p-6">
+                    <p class="text-gray-600 mb-4">
+                        Consulta los mejores tiempos registrados por sendero y compite con la comunidad.
+                    </p>
+                    <a href="ranking/index.html" class="btn btn-ranking">
+                        Ver Ranking
+                        <i class="fas fa-arrow-right ml-2"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Flora y Fauna -->
+            <div class="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow">
+                <div class="bg-green-600 p-6">
+                    <i class="fas fa-leaf text-4xl text-white mb-3"></i>
+                    <h3 class="text-xl font-bold text-white">Flora y Fauna</h3>
+                </div>
+                <div class="p-6">
+                    <p class="text-gray-600 mb-4">
+                        Descubre las especies de plantas y animales que habitan en nuestros senderos.
+                    </p>
+                    <a href="flora/index.html" class="btn btn-green">
+                        Explorar
+                        <i class="fas fa-arrow-right ml-2"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Información -->
+            <div class="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow">
+                <div class="bg-gray-600 p-6">
+                    <i class="fas fa-info-circle text-4xl text-white mb-3"></i>
+                    <h3 class="text-xl font-bold text-white">Información</h3>
+                </div>
+                <div class="p-6">
+                    <p class="text-gray-600 mb-4">
+                        Consejos de seguridad, recomendaciones y normas para disfrutar de los senderos.
+                    </p>
+                    <button onclick="mostrarInfo()" class="btn btn-gray">
+                        Más Info
+                        <i class="fas fa-arrow-right ml-2"></i>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Estadísticas rápidas -->
+        <section class="bg-white rounded-2xl shadow-lg p-8 mb-8">
+            <h3 class="text-2xl font-bold text-blue-600 text-center mb-6">Estadísticas del Parque</h3>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+                <div>
+                    <div class="text-3xl font-bold text-blue-600 mb-2">
+                        <i class="fas fa-route"></i>
+                    </div>
+                    <p class="text-sm text-gray-600">Senderos</p>
+                    <p class="text-2xl font-bold text-blue-600" id="total-senderos">2</p>
+                </div>
+                <div>
+                    <div class="text-3xl font-bold text-blue-500 mb-2">
+                        <i class="fas fa-walking"></i>
+                    </div>
+                    <p class="text-sm text-gray-600">Visitas Hoy</p>
+                    <p class="text-2xl font-bold text-blue-500" id="visitas-hoy">0</p>
+                </div>
+                <div>
+                    <div class="text-3xl font-bold text-orange-500 mb-2">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <p class="text-sm text-gray-600">Tiempos Registrados</p>
+                    <p class="text-2xl font-bold text-orange-500" id="tiempos-registrados">0</p>
+                </div>
+                <div>
+                    <div class="text-3xl font-bold text-orange-600 mb-2">
+                        <i class="fas fa-camera"></i>
+                    </div>
+                    <p class="text-sm text-gray-600">Especies Registradas</p>
+                    <p class="text-2xl font-bold text-orange-600" id="especies-registradas">0</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer bg-gradient-to-r from-blue-500 to-blue-700 text-white py-8 mt-12">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="flex flex-col sm:flex-row sm:items-center gap-4">
+                    <img src="images/mi-logo.png" alt="" class="w-12 h-12 object-contain shrink-0" width="48" height="48">
+                    <div>
+                        <h4 class="text-lg font-bold">Municipalidad de Guardia Mitre</h4>
+                        <p class="text-blue-100 text-sm">
+                            Promoviendo el turismo de naturaleza y la educación ambiental en Río Negro.
+                        </p>
+                    </div>
+                </div>
+                <div>
+                    <h4 class="text-lg font-bold mb-4">Contacto de Emergencia</h4>
+                    <p class="text-blue-100 text-sm mb-4">
+                        En caso de emergencia en los senderos, comunícate inmediatamente:
+                    </p>
+                    <a href="tel:911" class="flex items-center justify-center gap-2 bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-6 rounded-xl transition-colors shadow-lg">
+                        <i class="fas fa-phone-alt animate-pulse"></i>
+                        Emergencias: 911
+                    </a>
+                </div>
+                <div>
+                    <h4 class="text-lg font-bold mb-4">Síguenos</h4>
+                    <div class="flex space-x-4 mb-4">
+                        <a href="https://www.facebook.com/MuniGuardiaMitre" target="_blank" class="text-blue-200 hover:text-white transition-colors" aria-label="Facebook Municipalidad de Guardia Mitre">
+                            <i class="fab fa-facebook text-2xl"></i>
+                        </a>
+                        <a href="https://www.instagram.com/muniguardiamitre" target="_blank" class="text-blue-200 hover:text-white transition-colors" aria-label="Instagram Municipalidad de Guardia Mitre">
+                            <i class="fab fa-instagram text-2xl"></i>
+                        </a>
+                    </div>
+                    <a href="https://guardiamitre.gob.ar" target="_blank" class="text-blue-200 hover:text-white text-sm transition-colors flex items-center gap-2">
+                        <i class="fas fa-globe"></i>
+                        guardiamitre.gob.ar
+                    </a>
+                </div>
+            </div>
+            <div class="border-t border-blue-600 mt-8 pt-6 flex flex-col md:flex-row justify-between items-center gap-4 text-center md:text-left">
+                <p class="text-blue-200 text-sm">
+                    © 2026 Municipalidad de Guardia Mitre. Todos los derechos reservados.
+                </p>
+                <p class="text-blue-200 text-xs">
+                    Desarrollado por <span class="font-semibold text-white">Gonzalo Baldomé</span> | Especialista en Soluciones Digitales
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Modal de información -->
+    <div id="info-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+        <div class="bg-white rounded-lg p-6 max-w-md mx-4">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-bold text-blue-600">Información Importante</h3>
+                <button onclick="cerrarInfo()" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="space-y-3 text-sm text-gray-600">
+                <p><strong>Horarios:</strong> Los senderos están abiertos de 8:00 a 18:00 hs.</p>
+                <p><strong>Recomendaciones:</strong> Usar calzado adecuado, protector solar y llevar agua.</p>
+                <p><strong>Seguridad:</strong> No salir de los senderos marcados y respetar la fauna.</p>
+                <p><strong>Contacto:</strong> En caso de emergencia llamar al 911 o al número de guardaparques.</p>
+            </div>
+            <div class="mt-6">
+                <button onclick="cerrarInfo()" class="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700">
+                    Entendido
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/main.js"></script>
+    
+    <!-- Script para actualizar estadísticas -->
+    <script>
+        // Actualizar estadísticas básicas
+        document.addEventListener('DOMContentLoaded', async function() {
+            try {
+                // Obtener tiempos reales del CSV
+                const tiempos = await SheetsCsv.getTiempos();
+                const totalTiempos = tiempos.length;
+                
+                // Actualizar contador en la UI
+                document.getElementById('tiempos-registrados').textContent = totalTiempos;
+                
+                // Otras estadísticas simuladas o fijas por ahora
+                const visitas = localStorage.getItem('visitas-hoy') || Math.floor(Math.random() * 50) + 10;
+                const especies = 8; // Tenemos 8 especies fijas en el catálogo
+                
+                document.getElementById('visitas-hoy').textContent = visitas;
+                document.getElementById('especies-registradas').textContent = especies;
+                
+                // Cargar clima
+                const clima = await Utils.getWeather();
+                if (clima) {
+                    const temp = Math.round(clima.temperature);
+                    const codigo = clima.weathercode;
+                    document.getElementById('clima-temp').textContent = `${temp}°C`;
+                    document.getElementById('clima-widget').classList.remove('hidden');
+                    
+                    // Cambiar icono según código (simplificado)
+                    const icono = document.getElementById('clima-icono');
+                    if (codigo === 0) icono.className = 'fas fa-sun text-xl text-orange-500';
+                    else if (codigo <= 3) icono.className = 'fas fa-cloud-sun text-xl text-blue-400';
+                    else if (codigo <= 48) icono.className = 'fas fa-cloud text-xl text-gray-400';
+                    else icono.className = 'fas fa-cloud-showers-heavy text-xl text-blue-600';
+                }
+                
+                // Guardar para la próxima visita
+                localStorage.setItem('visitas-hoy', parseInt(visitas) + 1);
+            } catch (error) {
+                console.error('Error cargando estadísticas:', error);
+                // Fallback a valores por defecto si falla el CSV
+                document.getElementById('tiempos-registrados').textContent = '--';
+            }
+        });
+
+        // Funciones para el modal
+        function mostrarInfo() {
+            document.getElementById('info-modal').classList.remove('hidden');
+            document.getElementById('info-modal').classList.add('flex');
+        }
+
+        function cerrarInfo() {
+            document.getElementById('info-modal').classList.add('hidden');
+            document.getElementById('info-modal').classList.remove('flex');
+        }
+
+    </script>
+</body>
+</html>

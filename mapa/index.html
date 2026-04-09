@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mapa Interactivo - Senderos Guardia Mitre</title>
+    <meta name="description" content="Mapa interactivo de los senderos Monte Mitre de Guardia Mitre. Visualiza rutas, checkpoints y navegación GPS.">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    
+    <!-- Estilos personalizados -->
+    <link rel="stylesheet" href="../css/estilos.css">
+    
+    <!-- Configuración de Tailwind -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'naturaleza': '#0EA5E9',
+                        'rio': '#0284C7',
+                        'accion': '#F59E0B',
+                        'ranking': '#F97316',
+                        'naturaleza-claro': '#38BDF8',
+                        'rio-claro': '#7DD3FC'
+                    },
+                    fontFamily: {
+                        'sans': ['Inter', 'system-ui', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        /* Estilos específicos para el mapa */
+        .map-container {
+            height: 70vh;
+            min-height: 400px;
+            border-radius: 1rem;
+            overflow: hidden;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+        
+        @media (max-width: 768px) {
+            .map-container {
+                height: 60vh;
+                min-height: 300px;
+            }
+        }
+        
+        .leaflet-popup-content {
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+        
+        .popup-title {
+            font-weight: 600;
+            color: #0EA5E9;
+            margin-bottom: 8px;
+            font-size: 16px;
+        }
+        
+        .popup-info {
+            color: #6B7280;
+            margin-bottom: 4px;
+        }
+        
+        .popup-buttons {
+            margin-top: 12px;
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        
+        .popup-btn {
+            padding: 6px 12px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 12px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+        
+        .popup-btn-primary {
+            background-color: var(--color-naturaleza);
+            color: white;
+        }
+        
+        .popup-btn-secondary {
+            background-color: #F3F4F6;
+            color: var(--color-texto);
+            border: 1px solid #E5E7EB;
+        }
+        
+        .popup-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .map-controls {
+            background: white;
+            padding: 1rem;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            margin-bottom: 1rem;
+        }
+        
+        .layer-control {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .layer-control:last-child {
+            margin-bottom: 0;
+        }
+        
+        .layer-checkbox {
+            width: 1rem;
+            height: 1rem;
+            accent-color: var(--color-naturaleza);
+        }
+        
+        .legend {
+            background: white;
+            padding: 1rem;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            font-size: 0.875rem;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .legend-item:last-child {
+            margin-bottom: 0;
+        }
+        
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 2px solid white;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+        }
+        
+        .route-line {
+            height: 4px;
+            width: 30px;
+            border-radius: 2px;
+        }
+    </style>
+</head>
+<body class="bg-green-50 font-sans">
+    <header class="site-header bg-gradient-to-r from-blue-400 to-blue-600 text-white shadow-lg">
+        <div class="container mx-auto px-4 py-4 sm:py-6">
+            <div class="flex items-center justify-between gap-3">
+                <a href="../index.html" class="flex items-center space-x-3 sm:space-x-4 min-w-0 flex-1 rounded-lg text-white no-underline hover:opacity-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/70">
+                    <img src="../images/mi-logo.png" alt="Logo Guardia Mitre" class="w-12 h-12 sm:w-16 sm:h-16 shrink-0 object-contain" width="64" height="64">
+                    <div class="min-w-0 text-left">
+                        <h1 class="text-lg sm:text-2xl font-bold leading-tight">Municipalidad de Guardia Mitre</h1>
+                        <p class="text-blue-100 text-xs sm:text-sm">Río Negro, Argentina</p>
+                    </div>
+                </a>
+                <button type="button" id="menu-toggle" class="menu-toggle-btn lg:hidden shrink-0 inline-flex items-center justify-center w-11 h-11 rounded-lg text-white hover:bg-white/15 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/70" aria-expanded="false" aria-controls="main-nav" aria-label="Menú de navegación">
+                    <span class="sr-only">Abrir o cerrar menú</span>
+                    <span class="relative inline-flex h-6 w-6 items-center justify-center">
+                        <i class="fas fa-bars text-xl menu-icon-open absolute" aria-hidden="true"></i>
+                        <i class="fas fa-times text-xl menu-icon-close hidden absolute" aria-hidden="true"></i>
+                    </span>
+                </button>
+            </div>
+            <nav id="main-nav" class="site-nav hidden lg:block mt-4 border-t border-white/20 lg:border-0 pt-4 lg:pt-0 lg:mt-4" aria-label="Principal">
+                <ul class="flex flex-col lg:flex-row lg:flex-wrap lg:items-center gap-1 lg:gap-0 lg:space-x-4 xl:space-x-6">
+                    <li><a href="../index.html" class="nav-link">Inicio</a></li>
+                    <li><a href="../senderos/index.html" class="nav-link">Senderos</a></li>
+                    <li><a href="../mapa/index.html" class="nav-link">Mapa</a></li>
+                    <li><a href="../tiempos/index.html" class="nav-link">Registrar Tiempo</a></li>
+                    <li><a href="../ranking/index.html" class="nav-link">Ranking</a></li>
+                    <li><a href="../flora/index.html" class="nav-link">Flora y Fauna</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Contenido principal -->
+    <main class="container mx-auto px-4 py-8">
+        <!-- Hero Section -->
+        <section class="text-center mb-8">
+            <div class="bg-white rounded-2xl shadow-lg p-8">
+                <h2 class="text-4xl font-bold text-naturaleza mb-4">
+                    Explora los Senderos
+                </h2>
+                <p class="text-lg text-gray-600 mb-6">
+                    Visualiza los senderos turísticos de Guardia Mitre en un mapa interactivo. 
+                    Encuentra puntos de interés, estacionamientos y servicios disponibles.
+                </p>
+                <div class="bg-blue-50 border-l-4 border-rio p-4 mb-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+                    <p class="text-rio font-medium">
+                        <i class="fas fa-info-circle mr-2"></i>
+                        Puedes abrir el mapa en Google Maps para navegación GPS haciendo clic en cualquier punto.
+                    </p>
+                    <div id="clima-widget" class="hidden sm:flex items-center gap-3 text-blue-800 bg-white/50 px-4 py-2 rounded-full border border-blue-200 shadow-sm shrink-0">
+                        <i id="clima-icono" class="fas fa-sun text-xl text-orange-500"></i>
+                        <span id="clima-temp" class="font-bold text-lg">--°C</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Controles del mapa -->
+        <section class="grid grid-cols-1 lg:grid-cols-4 gap-6 mb-6">
+            <!-- Controles de capas -->
+            <div class="lg:col-span-1">
+                <div class="map-controls">
+                    <h3 class="text-lg font-bold text-naturaleza mb-4">
+                        <i class="fas fa-layer-group mr-2"></i>Capas
+                    </h3>
+                    <div class="space-y-3">
+                        <div class="layer-control">
+                            <input type="checkbox" id="senderos-layer" class="layer-checkbox" checked>
+                            <label for="senderos-layer" class="text-sm font-medium text-gray-700">Senderos</label>
+                        </div>
+                        <div class="layer-control">
+                            <input type="checkbox" id="puntos-layer" class="layer-checkbox" checked>
+                            <label for="puntos-layer" class="text-sm font-medium text-gray-700">Puntos de interés</label>
+                        </div>
+                        <div class="layer-control">
+                            <input type="checkbox" id="estacionamiento-layer" class="layer-checkbox" checked>
+                            <label for="estacionamiento-layer" class="text-sm font-medium text-gray-700">Estacionamientos</label>
+                        </div>
+                        <div class="layer-control">
+                            <input type="checkbox" id="servicios-layer" class="layer-checkbox" checked>
+                            <label for="servicios-layer" class="text-sm font-medium text-gray-700">Servicios</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Leyenda -->
+                <div class="legend mt-4">
+                    <h4 class="text-md font-bold text-naturaleza mb-3">
+                        <i class="fas fa-list mr-2"></i>Leyenda
+                    </h4>
+                    <div class="space-y-2">
+                        <div class="legend-item">
+                            <div class="legend-color" style="background-color: #2D5016;"></div>
+                            <span class="text-sm">Inicio de sendero</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color" style="background-color: #DC2626;"></div>
+                            <span class="text-sm">Final de sendero</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color" style="background-color: #F59E0B;"></div>
+                            <span class="text-sm">Punto de interés</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color" style="background-color: #2563EB;"></div>
+                            <span class="text-sm">Estacionamiento</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="route-line" style="background-color: #10B981;"></div>
+                            <span class="text-sm">Sendero baja dificultad</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="route-line" style="background-color: #F59E0B;"></div>
+                            <span class="text-sm">Sendero media dificultad</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="route-line" style="background-color: #EF4444;"></div>
+                            <span class="text-sm">Sendero alta dificultad</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Mapa -->
+            <div class="lg:col-span-3">
+                <div id="map" class="map-container"></div>
+            </div>
+        </section>
+
+        <!-- Información adicional -->
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Instrucciones de uso -->
+            <div class="bg-white rounded-xl shadow-lg p-6">
+                <h3 class="text-xl font-bold text-naturaleza mb-4">
+                    <i class="fas fa-compass mr-2"></i>Cómo usar el mapa
+                </h3>
+                <div class="space-y-3 text-sm text-gray-600">
+                    <div class="flex items-start gap-3">
+                        <i class="fas fa-hand-pointer text-naturaleza mt-1"></i>
+                        <div>
+                            <strong>Haz clic</strong> en cualquier marcador para ver información detallada
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-3">
+                        <i class="fas fa-mouse text-naturaleza mt-1"></i>
+                        <div>
+                            <strong>Arrastra</strong> el mapa para explorar diferentes áreas
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-3">
+                        <i class="fas fa-search-plus text-naturaleza mt-1"></i>
+                        <div>
+                            <strong>Zoom</strong> con el scroll del mouse o los botones del mapa
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-3">
+                        <i class="fas fa-layer-group text-naturaleza mt-1"></i>
+                        <div>
+                            <strong>Activa/desactiva</strong> las capas según lo que quieras ver
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Estadísticas del mapa -->
+            <div class="bg-white rounded-xl shadow-lg p-6">
+                <h3 class="text-xl font-bold text-naturaleza mb-4">
+                    <i class="fas fa-chart-bar mr-2"></i>Estadísticas
+                </h3>
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="text-center p-4 bg-gray-50 rounded-lg">
+                        <div class="text-3xl font-bold text-naturaleza mb-1">2</div>
+                        <div class="text-sm text-gray-600">Senderos</div>
+                    </div>
+                    <div class="text-center p-4 bg-gray-50 rounded-lg">
+                        <div class="text-3xl font-bold text-rio mb-1">7</div>
+                        <div class="text-sm text-gray-600">Checkpoints</div>
+                    </div>
+                    <div class="text-center p-4 bg-gray-50 rounded-lg">
+                        <div class="text-3xl font-bold text-accion mb-1">1</div>
+                        <div class="text-sm text-gray-600">Estacionamiento</div>
+                    </div>
+                    <div class="text-center p-4 bg-gray-50 rounded-lg">
+                        <div class="text-3xl font-bold text-ranking mb-1">4</div>
+                        <div class="text-sm text-gray-600">Servicios</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer bg-gradient-to-r from-blue-500 to-blue-700 text-white py-8 mt-12">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="flex flex-col sm:flex-row sm:items-center gap-4">
+                    <img src="../images/mi-logo.png" alt="" class="w-12 h-12 object-contain shrink-0" width="48" height="48">
+                    <div>
+                        <h4 class="text-lg font-bold">Municipalidad de Guardia Mitre</h4>
+                        <p class="text-blue-100 text-sm">
+                            Promoviendo el turismo de naturaleza y la educación ambiental en Río Negro.
+                        </p>
+                    </div>
+                </div>
+                <div>
+                    <h4 class="text-lg font-bold mb-4">Contacto de Emergencia</h4>
+                    <p class="text-blue-100 text-sm mb-4">
+                        En caso de emergencia en los senderos, comunícate inmediatamente:
+                    </p>
+                    <a href="tel:911" class="flex items-center justify-center gap-2 bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-6 rounded-xl transition-colors shadow-lg">
+                        <i class="fas fa-phone-alt animate-pulse"></i>
+                        Emergencias: 911
+                    </a>
+                </div>
+                <div>
+                    <h4 class="text-lg font-bold mb-4">Síguenos</h4>
+                    <div class="flex space-x-4 mb-4">
+                        <a href="https://www.facebook.com/MuniGuardiaMitre" target="_blank" class="text-blue-200 hover:text-white transition-colors" aria-label="Facebook Municipalidad de Guardia Mitre">
+                            <i class="fab fa-facebook text-2xl"></i>
+                        </a>
+                        <a href="https://www.instagram.com/muniguardiamitre" target="_blank" class="text-blue-200 hover:text-white transition-colors" aria-label="Instagram Municipalidad de Guardia Mitre">
+                            <i class="fab fa-instagram text-2xl"></i>
+                        </a>
+                    </div>
+                    <a href="https://guardiamitre.gob.ar" target="_blank" class="text-blue-200 hover:text-white text-sm transition-colors flex items-center gap-2">
+                        <i class="fas fa-globe"></i>
+                        guardiamitre.gob.ar
+                    </a>
+                </div>
+            </div>
+            <div class="border-t border-blue-600 mt-8 pt-6 flex flex-col md:flex-row justify-between items-center gap-4 text-center md:text-left">
+                <p class="text-blue-200 text-sm">
+                    © 2026 Municipalidad de Guardia Mitre. Todos los derechos reservados.
+                </p>
+                <p class="text-blue-200 text-xs">
+                    Desarrollado por <span class="font-semibold text-white">Gonzalo Baldomé</span> | Especialista en Soluciones Digitales
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="../js/main.js"></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    
+    <script>
+        // Coordenadas y configuración desde CONFIG
+        const GUARDIA_MITRE_COORDS = CONFIG.MAP_CENTER;
+
+        // Colores para dificultades
+        const COLORES = {
+            'baja': '#10B981',
+            'media': '#F59E0B',
+            'alta': '#F97316' // Naranja como en My Maps
+        };
+
+        // Puntos de interés
+        const puntosInteres = [
+            {
+                id: 'mirador-rio',
+                nombre: 'Mirador del Río',
+                tipo: 'mirador',
+                coordenadas: [-40.4208, -63.6698],
+                descripcion: 'Excelente vista panorámica del monte y el valle'
+            }
+        ];
+
+        // Estacionamientos
+        const estacionamientos = [
+            {
+                nombre: 'Estacionamiento Principal',
+                coordenadas: [-40.4242, -63.6655],
+                capacidad: 30
+            }
+        ];
+
+        let map;
+        let layers = {
+            senderos: [],
+            checkpoints: [],
+            puntos: [],
+            estacionamientos: []
+        };
+
+        async function initMap() {
+            map = L.map('map', {
+                zoomControl: true,
+                scrollWheelZoom: true
+            }).setView(GUARDIA_MITRE_COORDS, CONFIG.MAP_ZOOM);
+
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap contributors'
+            }).addTo(map);
+
+            L.control.scale().addTo(map);
+
+            await cargarClima();
+            agregarSenderos();
+            agregarCheckpoints();
+            agregarPuntosInteres();
+            agregarEstacionamientos();
+            configurarEventosCapas();
+            
+            // Forzar un ajuste de vista inicial
+            setTimeout(ajustarVista, 500);
+        }
+
+        async function cargarClima() {
+            const clima = await Utils.getWeather();
+            if (clima) {
+                const temp = Math.round(clima.temperature);
+                const codigo = clima.weathercode;
+                const widget = document.getElementById('clima-widget');
+                if (widget) {
+                    document.getElementById('clima-temp').textContent = `${temp}°C`;
+                    widget.classList.remove('hidden');
+                    
+                    const icono = document.getElementById('clima-icono');
+                    if (codigo === 0) icono.className = 'fas fa-sun text-xl text-orange-500';
+                    else if (codigo <= 3) icono.className = 'fas fa-cloud-sun text-xl text-blue-400';
+                    else if (codigo <= 48) icono.className = 'fas fa-cloud text-xl text-gray-400';
+                    else icono.className = 'fas fa-cloud-showers-heavy text-xl text-blue-600';
+                }
+            }
+        }
+
+        function agregarSenderos() {
+            CONFIG.SENDEROS.forEach(sendero => {
+                if (sendero.coordenadas && sendero.coordenadas.length > 0) {
+                    console.log(`Dibujando sendero: ${sendero.nombre} con ${sendero.coordenadas.length} puntos`);
+                    const polyline = L.polyline(sendero.coordenadas, {
+                        color: COLORES[sendero.dificultad] || '#10B981',
+                        weight: 6,
+                        opacity: 0.9,
+                        lineJoin: 'round'
+                    }).addTo(map);
+
+                    polyline.bindTooltip(`<strong>${sendero.nombre}</strong>`, { sticky: true });
+                    polyline.bindPopup(`
+                        <div class="popup-title">${sendero.nombre}</div>
+                        <div class="popup-info">${sendero.descripcion}</div>
+                        <div class="popup-info">
+                            <i class="fas fa-route"></i> ${sendero.distancia}km • 
+                            <i class="fas fa-mountain"></i> Dificultad: ${sendero.dificultad}
+                        </div>
+                        <div class="popup-buttons">
+                            <a href="../tiempos/index.html?sendero=${sendero.id}" class="popup-btn popup-btn-primary">
+                                <i class="fas fa-stopwatch mr-1"></i>Registrar tiempo
+                            </a>
+                        </div>
+                    `);
+                    layers.senderos.push(polyline);
+                }
+            });
+        }
+
+        function agregarCheckpoints() {
+            CONFIG.SENDEROS.forEach(sendero => {
+                if (sendero.checkpoints) {
+                    sendero.checkpoints.forEach(cp => {
+                        const marker = L.circleMarker([cp.lat, cp.lng], {
+                            radius: 6,
+                            fillColor: COLORES[sendero.dificultad] || '#F97316',
+                            color: '#fff',
+                            weight: 2,
+                            opacity: 1,
+                            fillOpacity: 0.9
+                        }).addTo(map);
+
+                        marker.bindTooltip(`<strong>Checkpoint:</strong> ${cp.nombre}`, { direction: 'top', offset: [0, -5] });
+                        layers.checkpoints.push(marker);
+                    });
+                }
+            });
+        }
+
+        function agregarPuntosInteres() {
+            puntosInteres.forEach(punto => {
+                const marker = L.marker(punto.coordenadas, {
+                    icon: L.divIcon({
+                        className: 'custom-marker',
+                        html: `<div style="background-color: #F59E0B; width: 14px; height: 14px; border-radius: 50%; border: 2px solid white; box-shadow: 0 2px 4px rgba(0,0,0,0.3);"></div>`,
+                        iconSize: [18, 18],
+                        iconAnchor: [9, 9]
+                    })
+                }).addTo(map);
+
+                marker.bindPopup(`
+                    <div class="popup-title">${punto.nombre}</div>
+                    <div class="popup-info">${punto.descripcion}</div>
+                    <button onclick="window.open('https://www.google.com/maps?q=${punto.coordenadas[0]},${punto.coordenadas[1]}', '_blank')" class="popup-btn popup-btn-secondary mt-2 w-full">
+                        <i class="fas fa-directions mr-1"></i>Cómo llegar con GPS
+                    </button>
+                `);
+                layers.puntos.push(marker);
+            });
+        }
+
+        function agregarEstacionamientos() {
+            estacionamientos.forEach(est => {
+                const marker = L.marker(est.coordenadas, {
+                    icon: L.divIcon({
+                        className: 'parking-marker',
+                        html: `<div style="background-color: #2563EB; width: 20px; height: 20px; border-radius: 50%; border: 2px solid white; box-shadow: 0 2px 4px rgba(0,0,0,0.3); display: flex; align-items: center; justify-content: center; color: white; font-size: 10px;"><i class="fas fa-parking"></i></div>`,
+                        iconSize: [24, 24],
+                        iconAnchor: [12, 12]
+                    })
+                }).addTo(map);
+                layers.estacionamientos.push(marker);
+            });
+        }
+
+        function configurarEventosCapas() {
+            const toggleLayer = (id, layerArray) => {
+                const el = document.getElementById(id);
+                if (el) {
+                    el.addEventListener('change', (e) => {
+                        layerArray.forEach(l => e.target.checked ? map.addLayer(l) : map.removeLayer(l));
+                    });
+                }
+            };
+            toggleLayer('senderos-layer', layers.senderos);
+            toggleLayer('puntos-layer', layers.puntos);
+            toggleLayer('estacionamiento-layer', layers.estacionamientos);
+        }
+
+        function ajustarVista() {
+            const allLayers = [...layers.senderos, ...layers.checkpoints, ...layers.puntos, ...layers.estacionamientos];
+            if (allLayers.length > 0) {
+                const group = new L.featureGroup(allLayers);
+                map.fitBounds(group.getBounds().pad(0.1));
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', initMap);
+        window.addEventListener('resize', () => map && map.invalidateSize());
+    </script>
+</body>
+</html>

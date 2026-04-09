@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Senderos Monte Mitre - Guardia Mitre</title>
+    <meta name="description" content="Detalles de los senderos Monte Mitre: distancias, dificultades y puntos de interés en Guardia Mitre.">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Estilos personalizados -->
+    <link rel="stylesheet" href="../css/estilos.css">
+    
+    <!-- Configuración de Tailwind -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'naturaleza': '#0EA5E9',
+                        'rio': '#0284C7',
+                        'accion': '#F59E0B',
+                        'ranking': '#F97316',
+                        'naturaleza-claro': '#38BDF8',
+                        'rio-claro': '#7DD3FC'
+                    },
+                    fontFamily: {
+                        'sans': ['Inter', 'system-ui', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-green-50 font-sans">
+    <header class="site-header bg-gradient-to-r from-blue-400 to-blue-600 text-white shadow-lg">
+        <div class="container mx-auto px-4 py-4 sm:py-6">
+            <div class="flex items-center justify-between gap-3">
+                <a href="../index.html" class="flex items-center space-x-3 sm:space-x-4 min-w-0 flex-1 rounded-lg text-white no-underline hover:opacity-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/70">
+                    <img src="../images/mi-logo.png" alt="Logo Guardia Mitre" class="w-12 h-12 sm:w-16 sm:h-16 shrink-0 object-contain" width="64" height="64">
+                    <div class="min-w-0 text-left">
+                        <h1 class="text-lg sm:text-2xl font-bold leading-tight">Municipalidad de Guardia Mitre</h1>
+                        <p class="text-blue-100 text-xs sm:text-sm">Río Negro, Argentina</p>
+                    </div>
+                </a>
+                <button type="button" id="menu-toggle" class="menu-toggle-btn lg:hidden shrink-0 inline-flex items-center justify-center w-11 h-11 rounded-lg text-white hover:bg-white/15 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/70" aria-expanded="false" aria-controls="main-nav" aria-label="Menú de navegación">
+                    <span class="sr-only">Abrir o cerrar menú</span>
+                    <span class="relative inline-flex h-6 w-6 items-center justify-center">
+                        <i class="fas fa-bars text-xl menu-icon-open absolute" aria-hidden="true"></i>
+                        <i class="fas fa-times text-xl menu-icon-close hidden absolute" aria-hidden="true"></i>
+                    </span>
+                </button>
+            </div>
+            <nav id="main-nav" class="site-nav hidden lg:block mt-4 border-t border-white/20 lg:border-0 pt-4 lg:pt-0 lg:mt-4" aria-label="Principal">
+                <ul class="flex flex-col lg:flex-row lg:flex-wrap lg:items-center gap-1 lg:gap-0 lg:space-x-4 xl:space-x-6">
+                    <li><a href="../index.html" class="nav-link">Inicio</a></li>
+                    <li><a href="../senderos/index.html" class="nav-link">Senderos</a></li>
+                    <li><a href="../mapa/index.html" class="nav-link">Mapa</a></li>
+                    <li><a href="../tiempos/index.html" class="nav-link">Registrar Tiempo</a></li>
+                    <li><a href="../ranking/index.html" class="nav-link">Ranking</a></li>
+                    <li><a href="../flora/index.html" class="nav-link">Flora y Fauna</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Contenido principal -->
+    <main class="container mx-auto px-4 py-8">
+        <!-- Hero Section -->
+        <section class="text-center mb-12">
+            <div class="bg-white rounded-2xl shadow-lg p-8">
+                <h2 class="text-4xl font-bold text-blue-600 mb-4">
+                    Nuestros Senderos
+                </h2>
+                <p class="text-lg text-gray-600 mb-6">
+                    Explora los senderos turísticos de Guardia Mitre. Cada recorrido ofrece una experiencia única 
+                    con diferentes niveles de dificultad y duración.
+                </p>
+                <div class="bg-blue-100 border-l-4 border-blue-500 p-4 mb-6">
+                    <p class="text-blue-700 font-medium">
+                        <i class="fas fa-exclamation-triangle mr-2"></i>
+                        Recomendaciones generales: Usar calzado adecuado, llevar agua, protector solar y respetar la flora y fauna.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Filtros -->
+        <section class="bg-white rounded-xl shadow-lg p-6 mb-8">
+            <h3 class="text-xl font-bold text-blue-600 mb-4">
+                <i class="fas fa-filter mr-2"></i>Filtrar senderos
+            </h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                    <label class="form-label">Dificultad</label>
+                    <select id="filtro-dificultad" class="form-select">
+                        <option value="">Todas las dificultades</option>
+                        <option value="baja">Baja</option>
+                        <option value="alta">Alta</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="form-label">Duración</label>
+                    <select id="filtro-duracion" class="form-select">
+                        <option value="">Cualquier duración</option>
+                        <option value="corta">Menos de 1 hora</option>
+                        <option value="media">1-2 horas</option>
+                        <option value="larga">Más de 2 horas</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="form-label">Distancia</label>
+                    <select id="filtro-distancia" class="form-select">
+                        <option value="">Cualquier distancia</option>
+                        <option value="corta">Menos de 3km</option>
+                        <option value="media">3-5km</option>
+                    </select>
+                </div>
+            </div>
+            <div class="mt-4">
+                <button onclick="filtrarSenderos()" class="btn btn-naturaleza">
+                    <i class="fas fa-search mr-2"></i>Aplicar filtros
+                </button>
+                <button onclick="limpiarFiltros()" class="btn btn-gray ml-2">
+                    <i class="fas fa-times mr-2"></i>Limpiar
+                </button>
+            </div>
+        </section>
+
+        <!-- Lista de senderos -->
+        <section id="senderos-container">
+            <!-- Los senderos se cargarán dinámicamente aquí -->
+        </section>
+
+        <!-- Información de seguridad -->
+        <section class="bg-yellow-50 border-l-4 border-yellow-400 p-6 mt-12">
+            <h3 class="text-xl font-bold text-yellow-800 mb-3">
+                <i class="fas fa-shield-alt mr-2"></i>Recomendaciones de seguridad
+            </h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-yellow-700">
+                <div>
+                    <h4 class="font-semibold mb-2">Antes de salir:</h4>
+                    <ul class="list-disc list-inside space-y-1 text-sm">
+                        <li>Verifica el clima y condiciones del sendero</li>
+                        <li>Informa a alguien sobre tu recorrido</li>
+                        <li>Lleva agua y snacks energéticos</li>
+                        <li>Usa calzado adecuado para caminata</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-semibold mb-2">Durante el recorrido:</h4>
+                    <ul class="list-disc list-inside space-y-1 text-sm">
+                        <li>Mantente en los senderos marcados</li>
+                        <li>No te acerques a la fauna silvestre</li>
+                        <li>Respeta la flora y no dañes las plantas</li>
+                        <li>Lleva tu basura de regreso</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer bg-gradient-to-r from-blue-500 to-blue-700 text-white py-8 mt-12">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="flex flex-col sm:flex-row sm:items-center gap-4">
+                    <img src="../images/mi-logo.png" alt="" class="w-12 h-12 object-contain shrink-0" width="48" height="48">
+                    <div>
+                        <h4 class="text-lg font-bold">Municipalidad de Guardia Mitre</h4>
+                        <p class="text-blue-100 text-sm">
+                            Promoviendo el turismo de naturaleza y la educación ambiental en Río Negro.
+                        </p>
+                    </div>
+                </div>
+                <div>
+                    <h4 class="text-lg font-bold mb-4">Contacto de Emergencia</h4>
+                    <p class="text-blue-100 text-sm mb-4">
+                        En caso de emergencia en los senderos, comunícate inmediatamente:
+                    </p>
+                    <a href="tel:911" class="flex items-center justify-center gap-2 bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-6 rounded-xl transition-colors shadow-lg">
+                        <i class="fas fa-phone-alt animate-pulse"></i>
+                        Emergencias: 911
+                    </a>
+                </div>
+                <div>
+                    <h4 class="text-lg font-bold mb-4">Síguenos</h4>
+                    <div class="flex space-x-4 mb-4">
+                        <a href="https://www.facebook.com/MuniGuardiaMitre" target="_blank" class="text-blue-200 hover:text-white transition-colors" aria-label="Facebook Municipalidad de Guardia Mitre">
+                            <i class="fab fa-facebook text-2xl"></i>
+                        </a>
+                        <a href="https://www.instagram.com/muniguardiamitre" target="_blank" class="text-blue-200 hover:text-white transition-colors" aria-label="Instagram Municipalidad de Guardia Mitre">
+                            <i class="fab fa-instagram text-2xl"></i>
+                        </a>
+                    </div>
+                    <a href="https://guardiamitre.gob.ar" target="_blank" class="text-blue-200 hover:text-white text-sm transition-colors flex items-center gap-2">
+                        <i class="fas fa-globe"></i>
+                        guardiamitre.gob.ar
+                    </a>
+                </div>
+            </div>
+            <div class="border-t border-blue-600 mt-8 pt-6 flex flex-col md:flex-row justify-between items-center gap-4 text-center md:text-left">
+                <p class="text-blue-200 text-sm">
+                    © 2026 Municipalidad de Guardia Mitre. Todos los derechos reservados.
+                </p>
+                <p class="text-blue-200 text-xs">
+                    Desarrollado por <span class="font-semibold text-white">Gonzalo Baldomé</span> | Especialista en Soluciones Digitales
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="../js/main.js"></script>
+    
+    <script>
+        // Datos de los senderos
+        const senderos = [
+            {
+                id: 'monte-mitre-baja',
+                nombre: 'Monte Mitre - Baja Dificultad',
+                descripcion: 'Recorrido ideal para principiantes, familias o un paseo rápido. Atraviesa zonas de monte bajo con senderos claros.',
+                distancia: 1.58,
+                duracion: 12,
+                dificultad: 'baja',
+                altitud: 40,
+                puntosInteres: ['Inicio Sendero', 'Punto de Retorno'],
+                recomendaciones: 'Apto para trekking y bicicleta. Llevar agua y protección solar.',
+                epocaIdeal: 'Todo el año',
+                horarios: '8:00 - 18:00 hs',
+                acceso: 'Entrada principal Proyecto Monte Mitre'
+            },
+            {
+                id: 'monte-mitre-alta',
+                nombre: 'Monte Mitre - Alta Dificultad',
+                descripcion: 'Recorrido exigente con terrenos variados y pendientes. Ideal para quienes buscan un desafío físico en contacto con la naturaleza.',
+                distancia: 2.8,
+                duracion: 19,
+                dificultad: 'alta',
+                altitud: 65,
+                puntosInteres: ['La subida al cielo', 'El desierto desesperante', 'El cañon de la tortura', 'La quebrada oscura', 'El salto al vacio', 'El empuje final'],
+                recomendaciones: 'Apto para trekking y bicicleta de montaña. Se recomienda buen calzado y experiencia previa.',
+                epocaIdeal: 'Primavera, Otoño e Invierno',
+                horarios: '8:00 - 17:00 hs',
+                acceso: 'Entrada principal Proyecto Monte Mitre'
+            }
+        ];
+
+        // Función para renderizar senderos
+        function renderizarSenderos(senderosFiltrados = senderos) {
+            const container = document.getElementById('senderos-container');
+            container.innerHTML = '';
+
+            senderosFiltrados.forEach((sendero, index) => {
+                const senderoHTML = `
+                    <div class="sendero-card animate-fadeIn" style="animation-delay: ${index * 0.1}s">
+                        <div class="sendero-header">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <h3 class="text-2xl font-bold">${sendero.nombre}</h3>
+                                    <p class="text-green-100 mt-1">${sendero.descripcion}</p>
+                                </div>
+                                <div class="text-right">
+                                    <div class="sendero-dificultad dificultad-${sendero.dificultad}">
+                                        ${sendero.dificultad.charAt(0).toUpperCase() + sendero.dificultad.slice(1)} dificultad
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="sendero-body">
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                                <div class="md:col-span-2">
+                                    <h4 class="font-bold text-naturaleza mb-3">Información del sendero</h4>
+                                    <div class="space-y-2 text-sm text-gray-600">
+                                        <div><strong>Época ideal:</strong> ${sendero.epocaIdeal}</div>
+                                        <div><strong>Horarios:</strong> ${sendero.horarios}</div>
+                                        <div><strong>Acceso:</strong> ${sendero.acceso}</div>
+                                        <div><strong>Altitud máxima:</strong> ${sendero.altitud}m</div>
+                                    </div>
+                                    
+                                    <h4 class="font-bold text-naturaleza mb-3 mt-4">Recomendaciones</h4>
+                                    <p class="text-sm text-gray-600">${sendero.recomendaciones}</p>
+                                    
+                                    <h4 class="font-bold text-naturaleza mb-3 mt-4">Puntos de interés</h4>
+                                    <ul class="list-disc list-inside text-sm text-gray-600">
+                                        ${sendero.puntosInteres.map(punto => `<li>${punto}</li>`).join('')}
+                                    </ul>
+                                </div>
+                                
+                                <div class="space-y-4">
+                                    <div class="bg-gray-50 p-4 rounded-lg text-center">
+                                        <div class="text-3xl mb-2">📏</div>
+                                        <div class="sendero-stat-value">${sendero.distancia}km</div>
+                                        <div class="sendero-stat-label">Distancia</div>
+                                    </div>
+                                    
+                                    <div class="bg-gray-50 p-4 rounded-lg text-center">
+                                        <div class="text-3xl mb-2">⏱️</div>
+                                        <div class="sendero-stat-value">${sendero.duracion}min</div>
+                                        <div class="sendero-stat-label">Duración estimada</div>
+                                    </div>
+                                    
+                                    <div class="bg-gray-50 p-4 rounded-lg text-center">
+                                        <div class="text-3xl mb-2">📍</div>
+                                        <div class="sendero-stat-value">${sendero.altitud}m</div>
+                                        <div class="sendero-stat-label">Altitud máxima</div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="flex flex-wrap gap-3">
+                                <a href="../mapa/index.html?sendero=${sendero.id}" class="btn btn-rio">
+                                    <i class="fas fa-map-marked-alt mr-2"></i>Ver en el mapa
+                                </a>
+                                <a href="../tiempos/index.html?sendero=${sendero.id}" class="btn btn-accion">
+                                    <i class="fas fa-stopwatch mr-2"></i>Registrar tiempo
+                                </a>
+                                <button onclick="compartirSendero('${sendero.id}')" class="btn btn-green">
+                                    <i class="fas fa-share-alt mr-2"></i>Compartir
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                container.innerHTML += senderoHTML;
+            });
+
+            if (senderosFiltrados.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-12">
+                        <i class="fas fa-search text-6xl text-gray-300 mb-4"></i>
+                        <h3 class="text-xl font-bold text-gray-600 mb-2">No se encontraron senderos</h3>
+                        <p class="text-gray-500">Intenta ajustar los filtros de búsqueda</p>
+                    </div>
+                `;
+            }
+        }
+
+        // Función para filtrar senderos
+        function filtrarSenderos() {
+            const dificultad = document.getElementById('filtro-dificultad').value;
+            const duracion = document.getElementById('filtro-duracion').value;
+            const distancia = document.getElementById('filtro-distancia').value;
+
+            let senderosFiltrados = senderos.filter(sendero => {
+                // Filtro por dificultad
+                if (dificultad && sendero.dificultad !== dificultad) {
+                    return false;
+                }
+
+                // Filtro por duración
+                if (duracion) {
+                    if (duracion === 'corta' && sendero.duracion >= 60) return false;
+                    if (duracion === 'media' && (sendero.duracion < 60 || sendero.duracion > 120)) return false;
+                    if (duracion === 'larga' && sendero.duracion <= 120) return false;
+                }
+
+                // Filtro por distancia
+                if (distancia) {
+                    if (distancia === 'corta' && sendero.distancia >= 3) return false;
+                    if (distancia === 'media' && (sendero.distancia < 3 || sendero.distancia > 5)) return false;
+                    if (distancia === 'larga' && sendero.distancia <= 5) return false;
+                }
+
+                return true;
+            });
+
+            renderizarSenderos(senderosFiltrados);
+            
+            // Mostrar mensaje de resultados
+            const mensaje = senderosFiltrados.length === senderos.length 
+                ? 'Mostrando todos los senderos'
+                : `Mostrando ${senderosFiltrados.length} de ${senderos.length} senderos`;
+            
+            Utils.showToast(mensaje, 'info');
+        }
+
+        // Función para limpiar filtros
+        function limpiarFiltros() {
+            document.getElementById('filtro-dificultad').value = '';
+            document.getElementById('filtro-duracion').value = '';
+            document.getElementById('filtro-distancia').value = '';
+            renderizarSenderos();
+            Utils.showToast('Filtros limpiados', 'success');
+        }
+
+        // Función para compartir sendero
+        function compartirSendero(senderoId) {
+            const sendero = senderos.find(s => s.id === senderoId);
+            if (sendero) {
+                const texto = `¡Descubre el ${sendero.nombre} en Guardia Mitre! ${sendero.descripcion}. Distancia: ${sendero.distancia}km, Duración: ${sendero.duracion}min.`;
+                const url = `${window.location.origin}/senderos/index.html#${senderoId}`;
+                
+                if (navigator.share) {
+                    navigator.share({
+                        title: sendero.nombre,
+                        text: texto,
+                        url: url
+                    });
+                } else {
+                    // Fallback para navegadores que no soportan Web Share API
+                    const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(texto + ' ' + url)}`;
+                    window.open(whatsappUrl, '_blank');
+                }
+            }
+        }
+
+        // Inicializar la página
+        document.addEventListener('DOMContentLoaded', function() {
+            renderizarSenderos();
+            
+            // Si hay un hash en la URL, hacer scroll al sendero correspondiente
+            if (window.location.hash) {
+                const senderoId = window.location.hash.substring(1);
+                setTimeout(() => {
+                    const elemento = document.getElementById(senderoId);
+                    if (elemento) {
+                        elemento.scrollIntoView({ behavior: 'smooth' });
+                    }
+                }, 500);
+            }
+        });
+
+        // Agregar eventos de filtro con debounce
+        let filtroTimeout;
+        ['filtro-dificultad', 'filtro-duracion', 'filtro-distancia'].forEach(id => {
+            document.getElementById(id).addEventListener('change', function() {
+                clearTimeout(filtroTimeout);
+                filtroTimeout = setTimeout(filtrarSenderos, 300);
+            });
+        });
+    </script>
+</body>
+</html>

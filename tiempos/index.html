@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registrar Tiempo - Senderos Guardia Mitre</title>
+    <meta name="description" content="Registra tu tiempo de recorrido en los senderos Monte Mitre de Guardia Mitre.">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Estilos personalizados -->
+    <link rel="stylesheet" href="../css/estilos.css">
+    
+    <!-- Configuración de Tailwind -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'naturaleza': '#0EA5E9',
+                        'rio': '#0284C7',
+                        'accion': '#F59E0B',
+                        'ranking': '#F97316',
+                        'naturaleza-claro': '#38BDF8',
+                        'rio-claro': '#7DD3FC'
+                    },
+                    fontFamily: {
+                        'sans': ['Inter', 'system-ui', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-green-50 font-sans">
+    <header class="site-header bg-gradient-to-r from-blue-400 to-blue-600 text-white shadow-lg">
+        <div class="container mx-auto px-4 py-4 sm:py-6">
+            <div class="flex items-center justify-between gap-3">
+                <a href="../index.html" class="flex items-center space-x-3 sm:space-x-4 min-w-0 flex-1 rounded-lg text-white no-underline hover:opacity-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/70">
+                    <img src="../images/mi-logo.png" alt="Logo Guardia Mitre" class="w-12 h-12 sm:w-16 sm:h-16 shrink-0 object-contain" width="64" height="64">
+                    <div class="min-w-0 text-left">
+                        <h1 class="text-lg sm:text-2xl font-bold leading-tight">Municipalidad de Guardia Mitre</h1>
+                        <p class="text-blue-100 text-xs sm:text-sm">Río Negro, Argentina</p>
+                    </div>
+                </a>
+                <button type="button" id="menu-toggle" class="menu-toggle-btn lg:hidden shrink-0 inline-flex items-center justify-center w-11 h-11 rounded-lg text-white hover:bg-white/15 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/70" aria-expanded="false" aria-controls="main-nav" aria-label="Menú de navegación">
+                    <span class="sr-only">Abrir o cerrar menú</span>
+                    <span class="relative inline-flex h-6 w-6 items-center justify-center">
+                        <i class="fas fa-bars text-xl menu-icon-open absolute" aria-hidden="true"></i>
+                        <i class="fas fa-times text-xl menu-icon-close hidden absolute" aria-hidden="true"></i>
+                    </span>
+                </button>
+            </div>
+            <nav id="main-nav" class="site-nav hidden lg:block mt-4 border-t border-white/20 lg:border-0 pt-4 lg:pt-0 lg:mt-4" aria-label="Principal">
+                <ul class="flex flex-col lg:flex-row lg:flex-wrap lg:items-center gap-1 lg:gap-0 lg:space-x-4 xl:space-x-6">
+                    <li><a href="../index.html" class="nav-link">Inicio</a></li>
+                    <li><a href="../senderos/index.html" class="nav-link">Senderos</a></li>
+                    <li><a href="../mapa/index.html" class="nav-link">Mapa</a></li>
+                    <li><a href="../tiempos/index.html" class="nav-link">Registrar Tiempo</a></li>
+                    <li><a href="../ranking/index.html" class="nav-link">Ranking</a></li>
+                    <li><a href="../flora/index.html" class="nav-link">Flora y Fauna</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Contenido principal -->
+    <main class="container mx-auto px-4 py-8">
+        <!-- Hero Section -->
+        <section class="text-center mb-12">
+            <div class="bg-white rounded-2xl shadow-lg p-8">
+                <h2 class="text-4xl font-bold text-naturaleza mb-4">
+                    Registra tu Tiempo de Caminata
+                </h2>
+                <p class="text-lg text-gray-600 mb-6">
+                    Registra tu tiempo de recorrido y compite con otros visitantes. ¡Demuestra que eres el más rápido!
+                </p>
+                <div class="bg-orange-50 border-l-4 border-accion p-4 mb-6">
+                    <p class="text-accion font-medium">
+                        <i class="fas fa-trophy mr-2"></i>
+                        ¡Los mejores tiempos aparecerán en el ranking público!
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Formulario de registro -->
+        <section class="bg-white rounded-xl shadow-lg p-8 mb-8">
+            <form id="form-tiempo" class="max-w-2xl mx-auto">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Nombre -->
+                    <div class="md:col-span-2">
+                        <label for="nombre" class="form-label">
+                            <i class="fas fa-user mr-2"></i>Tu nombre o apodo
+                        </label>
+                        <input type="text" id="nombre" name="nombre" class="form-input" 
+                               placeholder="Ej: Juan Pérez o Senderista2024" required>
+                        <p class="text-sm text-gray-500 mt-1">Este nombre aparecerá en el ranking público</p>
+                    </div>
+
+                    <!-- Sendero -->
+                    <div>
+                        <label for="sendero" class="form-label">
+                            <i class="fas fa-route mr-2"></i>Sendero realizado
+                        </label>
+                        <select id="sendero" name="sendero" class="form-select" required>
+                            <option value="">Selecciona un sendero</option>
+                            <option value="monte-mitre-baja">Monte Mitre - Baja (1.53km)</option>
+                            <option value="monte-mitre-alta">Monte Mitre - Alta (2.8km)</option>
+                        </select>
+                    </div>
+
+                    <!-- Tiempo -->
+                    <div>
+                        <label for="tiempo" class="form-label">
+                            <i class="fas fa-clock mr-2"></i>Tiempo total (minutos)
+                        </label>
+                        <input type="number" id="tiempo" name="tiempo" class="form-input" 
+                               placeholder="Ej: 45" min="1" max="999" required>
+                        <p class="text-sm text-gray-500 mt-1">Tiempo desde el inicio hasta el final</p>
+                    </div>
+
+                    <!-- Fecha -->
+                    <div>
+                        <label for="fecha" class="form-label">
+                            <i class="fas fa-calendar mr-2"></i>Fecha del recorrido
+                        </label>
+                        <input type="date" id="fecha" name="fecha" class="form-input" required>
+                    </div>
+
+                    <!-- Hora de inicio -->
+                    <div>
+                        <label for="hora-inicio" class="form-label">
+                            <i class="fas fa-play mr-2"></i>Hora de inicio
+                        </label>
+                        <input type="time" id="hora-inicio" name="hora-inicio" class="form-input">
+                    </div>
+
+                    <!-- Clima -->
+                    <div>
+                        <label for="clima" class="form-label">
+                            <i class="fas fa-cloud-sun mr-2"></i>Condición del clima
+                        </label>
+                        <select id="clima" name="clima" class="form-select">
+                            <option value="">Selecciona el clima</option>
+                            <option value="soleado">Soleado</option>
+                            <option value="nublado">Nublado</option>
+                            <option value="lluvioso">Lluvioso</option>
+                            <option value="ventoso">Ventoso</option>
+                        </select>
+                    </div>
+
+                    <!-- Comentarios -->
+                    <div class="md:col-span-2">
+                        <label for="comentarios" class="form-label">
+                            <i class="fas fa-comment mr-2"></i>Comentarios (opcional)
+                        </label>
+                        <textarea id="comentarios" name="comentarios" class="form-textarea" rows="3"
+                                  placeholder="Comparte tu experiencia, condiciones del sendero, avistamientos de fauna, etc."></textarea>
+                    </div>
+
+                    <!-- Términos -->
+                    <div class="md:col-span-2">
+                        <label class="flex items-start gap-3">
+                            <input type="checkbox" id="terminos" name="terminos" class="mt-1" required>
+                            <span class="text-sm text-gray-600">
+                                Acepto que mi nombre y tiempo de recorrido aparezcan públicamente en el ranking. 
+                                Entiendo que puedo solicitar la eliminación de mis datos contactando a la municipalidad.
+                            </span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Botones -->
+                <div class="flex flex-wrap gap-4 justify-center mt-8">
+                    <button type="submit" class="btn btn-accion text-lg px-8">
+                        <i class="fas fa-save mr-2"></i>Registrar tiempo
+                    </button>
+                    <button type="button" onclick="verRanking()" class="btn btn-ranking text-lg px-8">
+                        <i class="fas fa-trophy mr-2"></i>Ver ranking
+                    </button>
+                </div>
+            </form>
+        </section>
+
+        <!-- Últimos registros -->
+        <section class="bg-white rounded-xl shadow-lg p-8">
+            <h3 class="text-2xl font-bold text-naturaleza mb-6">
+                <i class="fas fa-history mr-2"></i>Últimos tiempos registrados
+            </h3>
+            <div id="ultimos-registros" class="space-y-4">
+                <!-- Los registros se cargarán dinámicamente aquí -->
+            </div>
+            <div class="text-center mt-6">
+                <a href="../ranking/index.html" class="btn btn-naturaleza">
+                    <i class="fas fa-list mr-2"></i>Ver todos los registros
+                </a>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer bg-gradient-to-r from-blue-500 to-blue-700 text-white py-8 mt-12">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="flex flex-col sm:flex-row sm:items-center gap-4">
+                    <img src="../images/mi-logo.png" alt="" class="w-12 h-12 object-contain shrink-0" width="48" height="48">
+                    <div>
+                        <h4 class="text-lg font-bold">Municipalidad de Guardia Mitre</h4>
+                        <p class="text-blue-100 text-sm">
+                            Promoviendo el turismo de naturaleza y la educación ambiental en Río Negro.
+                        </p>
+                    </div>
+                </div>
+                <div>
+                    <h4 class="text-lg font-bold mb-4">Contacto de Emergencia</h4>
+                    <p class="text-blue-100 text-sm mb-4">
+                        En caso de emergencia en los senderos, comunícate inmediatamente:
+                    </p>
+                    <a href="tel:911" class="flex items-center justify-center gap-2 bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-6 rounded-xl transition-colors shadow-lg">
+                        <i class="fas fa-phone-alt animate-pulse"></i>
+                        Emergencias: 911
+                    </a>
+                </div>
+                <div>
+                    <h4 class="text-lg font-bold mb-4">Síguenos</h4>
+                    <div class="flex space-x-4 mb-4">
+                        <a href="https://www.facebook.com/MuniGuardiaMitre" target="_blank" class="text-blue-200 hover:text-white transition-colors" aria-label="Facebook Municipalidad de Guardia Mitre">
+                            <i class="fab fa-facebook text-2xl"></i>
+                        </a>
+                        <a href="https://www.instagram.com/muniguardiamitre" target="_blank" class="text-blue-200 hover:text-white transition-colors" aria-label="Instagram Municipalidad de Guardia Mitre">
+                            <i class="fab fa-instagram text-2xl"></i>
+                        </a>
+                    </div>
+                    <a href="https://guardiamitre.gob.ar" target="_blank" class="text-blue-200 hover:text-white text-sm transition-colors flex items-center gap-2">
+                        <i class="fas fa-globe"></i>
+                        guardiamitre.gob.ar
+                    </a>
+                </div>
+            </div>
+            <div class="border-t border-blue-600 mt-8 pt-6 flex flex-col md:flex-row justify-between items-center gap-4 text-center md:text-left">
+                <p class="text-blue-200 text-sm">
+                    © 2026 Municipalidad de Guardia Mitre. Todos los derechos reservados.
+                </p>
+                <p class="text-blue-200 text-xs">
+                    Desarrollado por <span class="font-semibold text-white">Gonzalo Baldomé</span> | Especialista en Soluciones Digitales
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="../js/main.js"></script>
+    
+    <script>
+        // Google Form: Monte Mitre – Registro de Tiempos (IDs desde el HTML público del formulario)
+        const GOOGLE_FORMS_CONFIG = {
+            formUrl: 'https://docs.google.com/forms/d/e/1FAIpQLSfzRfc2f-i8xmBMGfVbhDz4Nnxlt5hOfpK3Y4p3AE8D_iw0Pw/formResponse',
+            fbzx: '8064151695372825608',
+            fieldIds: {
+                nombre: 'entry.969350065',
+                sendero: 'entry.49559792',
+                tiempo: 'entry.236869142',
+                fechaBase: 'entry.341045598',
+                horaBase: 'entry.1889950637',
+                clima: 'entry.1090869712',
+                comentarios: 'entry.1586715887',
+                terminos: 'entry.871715811'
+            },
+            senderoFormText: {
+                'monte-mitre-baja': 'Monte Mitre - Dificultad Baja',
+                'monte-mitre-alta': 'Monte Mitre - Dificultad Alta'
+            },
+            climaFormText: {
+                soleado: 'Soleado',
+                nublado: 'Nublado',
+                lluvioso: 'Lluvioso',
+                ventoso: 'Ventoso'
+            }
+        };
+
+        // Datos de ejemplo para mostrar (fallback)
+        const registrosEjemplo = [
+            {
+                nombre: 'Carlos M.',
+                sendero: 'monte-mitre-baja',
+                tiempo: 22,
+                fecha: '2024-03-10',
+                clima: 'soleado',
+                comentarios: 'Hermoso recorrido'
+            },
+            {
+                nombre: 'María S.',
+                sendero: 'monte-mitre-alta',
+                tiempo: 49,
+                fecha: '2024-03-09',
+                clima: 'nublado',
+                comentarios: 'Se siente más exigente, pero vale la pena'
+            }
+        ];
+
+        // Inicializar la página
+        document.addEventListener('DOMContentLoaded', function() {
+            // Establecer fecha actual
+            document.getElementById('fecha').value = Utils.getCurrentDate();
+            
+            // Cargar últimos registros
+            cargarUltimosRegistros();
+            
+            // Si hay parámetros en la URL, prellenar el sendero
+            const urlParams = new URLSearchParams(window.location.search);
+            const senderoParam = urlParams.get('sendero');
+            if (senderoParam) {
+                document.getElementById('sendero').value = senderoParam;
+            }
+        });
+
+        // Manejar el envío del formulario
+        document.getElementById('form-tiempo').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            const data = Object.fromEntries(formData);
+            
+            // Validaciones adicionales
+            if (!data.nombre || !data.sendero || !data.tiempo || !data.fecha) {
+                Utils.showToast('Por favor completa todos los campos requeridos', 'error');
+                return;
+            }
+            
+            if (parseInt(data.tiempo) <= 0) {
+                Utils.showToast('El tiempo debe ser mayor a 0 minutos', 'error');
+                return;
+            }
+            
+            if (!data.terminos) {
+                Utils.showToast('Debes aceptar los términos y condiciones', 'error');
+                return;
+            }
+            
+            // Mostrar indicador de carga
+            const submitBtn = e.target.querySelector('button[type="submit"]');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Registrando...';
+            submitBtn.disabled = true;
+            
+            try {
+                // En producción, aquí se enviaría a Google Forms
+                // Por ahora, simulamos el registro local
+                const resultado = await registrarTiempo(data);
+                
+                if (resultado.success) {
+                    Utils.showToast('¡Tiempo registrado exitosamente!', 'success');
+                    
+                    // Limpiar formulario
+                    this.reset();
+                    document.getElementById('fecha').value = Utils.getCurrentDate();
+                    
+                    // Recargar últimos registros
+                    cargarUltimosRegistros();
+                    
+                    // Opcional: redirigir al ranking
+                    setTimeout(() => {
+                        if (confirm('¿Quieres ver el ranking actualizado?')) {
+                            window.location.href = '../ranking/index.html';
+                        }
+                    }, 2000);
+                } else {
+                    throw new Error(resultado.error || 'Error al registrar');
+                }
+                
+            } catch (error) {
+                console.error('Error al registrar tiempo:', error);
+                Utils.showToast('Error al registrar el tiempo: ' + error.message, 'error');
+            } finally {
+                // Restaurar botón
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+            }
+        });
+
+        // Envío a Google Forms (sin CORS). Los textos de sendero/clima deben coincidir con el Form.
+        async function registrarTiempo(data) {
+            if (!GOOGLE_FORMS_CONFIG.formUrl) {
+                throw new Error('Falta configurar GOOGLE_FORMS_CONFIG.formUrl.');
+            }
+
+            const ids = GOOGLE_FORMS_CONFIG.fieldIds;
+            const senderoText = GOOGLE_FORMS_CONFIG.senderoFormText[data.sendero];
+            if (!senderoText) {
+                throw new Error('Sendero no reconocido.');
+            }
+
+            const payload = new FormData();
+            payload.append(ids.nombre, String(data.nombre).trim());
+            payload.append(ids.sendero, senderoText);
+            payload.append(ids.tiempo, String(data.tiempo).trim());
+            payload.append(ids.terminos, 'Acepto');
+
+            const fechaParts = String(data.fecha).split('-');
+            if (fechaParts.length === 3) {
+                const y = fechaParts[0];
+                const mo = fechaParts[1].padStart(2, '0');
+                const da = fechaParts[2].padStart(2, '0');
+                payload.append(ids.fechaBase + '_year', y);
+                payload.append(ids.fechaBase + '_month', mo);
+                payload.append(ids.fechaBase + '_day', da);
+            }
+
+            if (data.clima && GOOGLE_FORMS_CONFIG.climaFormText[data.clima]) {
+                payload.append(ids.clima, GOOGLE_FORMS_CONFIG.climaFormText[data.clima]);
+            }
+            if (data.comentarios && String(data.comentarios).trim()) {
+                payload.append(ids.comentarios, String(data.comentarios).trim());
+            }
+
+            const horaVal = data['hora-inicio'] && String(data['hora-inicio']).trim();
+            if (horaVal) {
+                const hp = horaVal.split(':');
+                const h24 = parseInt(hp[0], 10);
+                const mi = parseInt(hp[1], 10);
+                if (Number.isFinite(h24) && Number.isFinite(mi)) {
+                    let h12 = h24 % 12;
+                    if (h12 === 0) h12 = 12;
+                    const ap = h24 >= 12 ? 'PM' : 'AM';
+                    payload.append(ids.horaBase + '_hour', String(h12));
+                    payload.append(ids.horaBase + '_minute', String(mi).padStart(2, '0'));
+                    payload.append(ids.horaBase + '_second', '0');
+                    payload.append(ids.horaBase, ap);
+                }
+            }
+
+            if (GOOGLE_FORMS_CONFIG.fbzx) {
+                payload.append('fbzx', GOOGLE_FORMS_CONFIG.fbzx);
+            }
+            payload.append('pageHistory', '0');
+            payload.append('fvv', '1');
+
+            await fetch(GOOGLE_FORMS_CONFIG.formUrl, {
+                method: 'POST',
+                mode: 'no-cors',
+                body: payload
+            });
+
+            // Guardamos una copia local opcional para feedback inmediato (no es la fuente del ranking real)
+            const nuevoRegistro = {
+                id: Utils.generateId(),
+                nombre: data.nombre,
+                sendero: data.sendero,
+                tiempo: parseInt(data.tiempo, 10),
+                fecha: data.fecha,
+                clima: data.clima || '',
+                comentarios: data.comentarios || '',
+                timestamp: Date.now()
+            };
+            const registros = LocalData.get('tiempos-registrados') || [];
+            registros.unshift(nuevoRegistro);
+            if (registros.length > 30) registros.splice(30);
+            LocalData.save('tiempos-registrados', registros);
+
+            return { success: true, data: nuevoRegistro };
+        }
+
+        // Función para cargar últimos registros
+        async function cargarUltimosRegistros() {
+            let registros = [];
+            try {
+                registros = await SheetsCsv.getTiempos();
+            } catch (e) {
+                // fallback: local + ejemplo
+                registros = LocalData.get('tiempos-registrados') || registrosEjemplo;
+            }
+            const ultimosRegistros = [...registros]
+                .filter(r => r && r.nombre && r.sendero && r.tiempo)
+                .slice(0, 5);
+            
+            const container = document.getElementById('ultimos-registros');
+            container.innerHTML = '';
+            
+            if (ultimosRegistros.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-8 text-gray-500">
+                        <i class="fas fa-clock text-4xl mb-4"></i>
+                        <p>No hay registros aún. ¡Sé el primero en registrar tu tiempo!</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            ultimosRegistros.forEach((registro, index) => {
+                const senderoNombre = {
+                    'monte-mitre-baja': 'Monte Mitre - Baja (1.53km)',
+                    'monte-mitre-alta': 'Monte Mitre - Alta (2.8km)'
+                }[registro.sendero] || 'Sendero desconocido';
+                
+                const fechaFormateada = registro.fecha ? new Date(registro.fecha).toLocaleDateString('es-AR') : '';
+                const tiempoFormateado = Utils.formatTime(registro.tiempo);
+                
+                const registroHTML = `
+                    <div class="bg-gray-50 rounded-lg p-4 animate-fadeIn" style="animation-delay: ${index * 0.1}s">
+                        <div class="flex items-center justify-between mb-2">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 bg-accion text-white rounded-full flex items-center justify-center font-bold">
+                                    ${registro.nombre.charAt(0).toUpperCase()}
+                                </div>
+                                <div>
+                                    <div class="font-bold text-naturaleza">${registro.nombre}</div>
+                                    <div class="text-sm text-gray-600">${senderoNombre}</div>
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-lg font-bold text-accion">${tiempoFormateado}</div>
+                                ${fechaFormateada ? `<div class="text-sm text-gray-500">${fechaFormateada}</div>` : ''}
+                            </div>
+                        </div>
+                        ${registro.comentarios ? `<p class="text-sm text-gray-600 mt-2 italic">"${registro.comentarios}"</p>` : ''}
+                    </div>
+                `;
+                
+                container.innerHTML += registroHTML;
+            });
+        }
+
+        // Función para ver el ranking
+        function verRanking() {
+            window.location.href = '../ranking/index.html';
+        }
+
+        // Función para exportar datos (opcional)
+        function exportarDatos() {
+            const registros = LocalData.get('tiempos-registrados') || [];
+            if (registros.length === 0) {
+                Utils.showToast('No hay datos para exportar', 'warning');
+                return;
+            }
+            
+            // Convertir a CSV
+            const csv = convertirACSV(registros);
+            descargarArchivo(csv, 'tiempos-guardia-mitre.csv', 'text/csv');
+        }
+
+        function convertirACSV(datos) {
+            const cabeceras = ['Nombre', 'Sendero', 'Tiempo (min)', 'Fecha', 'Clima', 'Comentarios'];
+            const filas = datos.map(d => [
+                d.nombre,
+                d.sendero,
+                d.tiempo,
+                d.fecha,
+                d.clima,
+                d.comentarios
+            ]);
+            
+            return [cabeceras, ...filas].map(fila => fila.join(',')).join('\n');
+        }
+
+        function descargarArchivo(contenido, nombre, tipo) {
+            const blob = new Blob([contenido], { type: tipo });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = nombre;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+    </script>
+</body>
+</html>
