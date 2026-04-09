@@ -456,10 +456,12 @@
         // Configurar en `js/main.js` -> CONFIG.GOOGLE_SHEETS_CSV_URL
         let tiemposCache = [];
         let ultimaActualizacion = new Date();
-        const nombresSenderos = {
-            'monte-mitre-baja': 'Monte Mitre - Baja (1.53km)',
-            'monte-mitre-alta': 'Monte Mitre - Alta (2.8km)'
-        };
+
+        // Función para obtener el nombre del sendero desde la configuración global
+        function getNombreSendero(id) {
+            const sendero = CONFIG.SENDEROS.find(s => s.id === id);
+            return sendero ? sendero.nombre : id;
+        }
 
         // Inicializar la página
         document.addEventListener('DOMContentLoaded', function() {
@@ -546,7 +548,7 @@
             if (top3.length >= 3) ordenPodio.push(top3[2]); // Tercero
             
             ordenPodio.forEach((item, index) => {
-                const nombreSendero = nombresSenderos[item.sendero] || 'Sendero desconocido';
+                const nombreSendero = getNombreSendero(item.sendero);
                 
                 const tiempoFormateado = Utils.formatTime(item.tiempo);
                 let posicionReal;
@@ -602,7 +604,7 @@
             `;
             
             ranking.forEach((item, index) => {
-                const nombreSendero = nombresSenderos[item.sendero] || 'Sendero desconocido';
+                const nombreSendero = getNombreSendero(item.sendero);
                 
                 const tiempoFormateado = Utils.formatTime(item.tiempo);
                 const fechaFormateada = item.fecha ? new Date(item.fecha).toLocaleDateString('es-AR') : '--';
@@ -659,7 +661,7 @@
             ranking.forEach(item => {
                 if (!estadisticasPorSendero[item.sendero]) {
                     estadisticasPorSendero[item.sendero] = {
-                        nombre: nombresSenderos[item.sendero] || item.sendero,
+                        nombre: getNombreSendero(item.sendero),
                         registros: 0,
                         mejorTiempo: Infinity,
                         peorTiempo: 0,
