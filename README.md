@@ -159,9 +159,9 @@ Coloca los códigos QR en:
 5. Tu sitio estará disponible en: `https://tu-usuario.github.io`
 
 ### Senderos Disponibles
-Actualmente hay **2 senderos** disponibles:
-1. **Sendero del Río** - 2.5km, 45 minutos, dificultad baja
-2. **Sendero del Monte Nativo** - 3.8km, 75 minutos, dificultad media
+Actualmente hay **2 senderos** del proyecto **Monte Mitre** disponibles:
+1. **Monte Mitre - Baja Dificultad** - 1.58km, 12 minutos aprox. (trekking/bicicleta).
+2. **Monte Mitre - Alta Dificultad** - 2.8km, 19 minutos aprox. (trekking/bicicleta).
 
 ### 3. Actualizar URLs
 Actualiza las URLs en el código con tu nuevo dominio:
