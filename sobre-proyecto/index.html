@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sobre el Proyecto - Senderos Guardia Mitre</title>
+    <meta name="description" content="Conoce la historia y los creadores del proyecto de senderos Monte Mitre en Guardia Mitre.">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Estilos personalizados -->
+    <link rel="stylesheet" href="../css/estilos.css">
+    
+    <!-- Configuración de Tailwind -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'naturaleza': '#0EA5E9',
+                        'rio': '#0284C7',
+                        'accion': '#F59E0B',
+                        'ranking': '#F97316'
+                    },
+                    fontFamily: {
+                        'sans': ['Inter', 'system-ui', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-blue-50 font-sans min-h-screen flex flex-col">
+    <header class="site-header bg-gradient-to-r from-blue-400 to-blue-600 text-white shadow-lg">
+        <div class="container mx-auto px-4 py-4 sm:py-6">
+            <div class="flex items-center justify-between gap-3">
+                <a href="../index.html" class="flex items-center space-x-3 sm:space-x-4 min-w-0 flex-1 rounded-lg text-white no-underline hover:opacity-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/70">
+                    <img src="../images/mi-logo.png" alt="Logo Guardia Mitre" class="w-12 h-12 sm:w-16 sm:h-16 shrink-0 object-contain" width="64" height="64">
+                    <div class="min-w-0 text-left">
+                        <h1 class="text-lg sm:text-2xl font-bold leading-tight">Municipalidad de Guardia Mitre</h1>
+                        <p class="text-blue-100 text-xs sm:text-sm">Río Negro, Argentina</p>
+                    </div>
+                </a>
+                <button type="button" id="menu-toggle" class="lg:hidden p-2 text-white hover:bg-white/10 rounded-lg transition-colors">
+                    <i class="fas fa-bars text-xl"></i>
+                </button>
+            </div>
+            <nav id="main-nav" class="site-nav hidden lg:block mt-4 border-t border-white/20 lg:border-0 pt-4 lg:pt-0 lg:mt-4">
+                <ul class="flex flex-col lg:flex-row lg:flex-wrap lg:items-center gap-4">
+                    <li><a href="../index.html" class="nav-link">Inicio</a></li>
+                    <li><a href="../senderos/index.html" class="nav-link">Senderos</a></li>
+                    <li><a href="../mapa/index.html" class="nav-link">Mapa</a></li>
+                    <li><a href="../tiempos/index.html" class="nav-link">Registrar Tiempo</a></li>
+                    <li><a href="../ranking/index.html" class="nav-link">Ranking</a></li>
+                    <li><a href="../flora/index.html" class="nav-link">Flora y Fauna</a></li>
+                    <li><a href="../sobre-proyecto/index.html" class="nav-link font-bold border-b-2 border-white">Sobre el Proyecto</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-4 py-12 flex-grow">
+        <section class="max-w-4xl mx-auto">
+            <div class="bg-white rounded-3xl shadow-xl overflow-hidden">
+                <div class="bg-gradient-to-br from-blue-500 to-blue-700 p-8 text-center text-white">
+                    <i class="fas fa-mountain text-5xl mb-4"></i>
+                    <h2 class="text-4xl font-bold mb-2">Sobre el Proyecto Monte Mitre</h2>
+                    <p class="text-blue-100 text-lg">Iniciativa para la salud y la comunidad</p>
+                </div>
+                
+                <div class="p-8 md:p-12">
+                    <div class="space-y-6 text-gray-700 text-lg leading-relaxed">
+                        <p>
+                            El presente proyecto, elaborado por los estudiantes de Educación Física <strong>Chazarreta Alan, Haure Milena y Ramírez Sergio</strong>, propone la creación y puesta en valor del Sendero <strong>“Monte Mitre”</strong>, un espacio natural destinado a la comunidad de Guardia Mitre.
+                        </p>
+                        <p>
+                            Esta iniciativa surge como una propuesta orientada a promover la actividad física, el contacto con la naturaleza y el fortalecimiento del sentido de pertenencia comunitaria, a través de la creación de un sendero accesible, seguro y desafiante.
+                        </p>
+                    </div>
+
+                    <div class="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div class="bg-blue-50 p-6 rounded-2xl border border-blue-100 text-center transform hover:scale-105 transition-transform">
+                            <div class="w-16 h-16 bg-blue-500 text-white rounded-full flex items-center justify-center mx-auto mb-4 text-xl font-bold shadow-md">AC</div>
+                            <h3 class="font-bold text-blue-900">Alan Chazarreta</h3>
+                            <p class="text-blue-600 text-sm">Ed. Física</p>
+                        </div>
+                        <div class="bg-blue-50 p-6 rounded-2xl border border-blue-100 text-center transform hover:scale-105 transition-transform">
+                            <div class="w-16 h-16 bg-blue-500 text-white rounded-full flex items-center justify-center mx-auto mb-4 text-xl font-bold shadow-md">MH</div>
+                            <h3 class="font-bold text-blue-900">Milena Haure</h3>
+                            <p class="text-blue-600 text-sm">Ed. Física</p>
+                        </div>
+                        <div class="bg-blue-50 p-6 rounded-2xl border border-blue-100 text-center transform hover:scale-105 transition-transform">
+                            <div class="w-16 h-16 bg-blue-500 text-white rounded-full flex items-center justify-center mx-auto mb-4 text-xl font-bold shadow-md">SR</div>
+                            <h3 class="font-bold text-blue-900">Sergio Ramírez</h3>
+                            <p class="text-blue-600 text-sm">Ed. Física</p>
+                        </div>
+                    </div>
+
+                    <div class="mt-12 pt-8 border-t border-gray-100 flex flex-col items-center">
+                        <p class="text-gray-500 text-sm mb-4">Proyecto impulsado por la</p>
+                        <img src="../images/mi-logo.png" alt="Municipalidad de Guardia Mitre" class="w-24 h-24 object-contain opacity-80" width="96" height="96">
+                        <p class="font-bold text-gray-800 mt-2">Municipalidad de Guardia Mitre</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer bg-gradient-to-r from-blue-500 to-blue-700 text-white py-8">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="flex flex-col sm:flex-row sm:items-center gap-4">
+                    <img src="../images/mi-logo.png" alt="" class="w-12 h-12 object-contain shrink-0" width="48" height="48">
+                    <div>
+                        <h4 class="text-lg font-bold">Municipalidad de Guardia Mitre</h4>
+                        <p class="text-blue-100 text-sm">
+                            Promoviendo el turismo de naturaleza y la educación ambiental en Río Negro.
+                        </p>
+                    </div>
+                </div>
+                <div>
+                    <h4 class="text-lg font-bold mb-4">Contacto de Emergencia</h4>
+                    <a href="tel:911" class="flex items-center justify-center gap-2 bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-6 rounded-xl transition-colors shadow-lg">
+                        <i class="fas fa-phone-alt animate-pulse"></i>
+                        Emergencias: 911
+                    </a>
+                </div>
+                <div>
+                    <h4 class="text-lg font-bold mb-4">Síguenos</h4>
+                    <div class="flex space-x-4 mb-4">
+                        <a href="https://www.facebook.com/MuniGuardiaMitre" target="_blank" class="text-blue-200 hover:text-white transition-colors"><i class="fab fa-facebook text-2xl"></i></a>
+                        <a href="https://www.instagram.com/muniguardiamitre" target="_blank" class="text-blue-200 hover:text-white transition-colors"><i class="fab fa-instagram text-2xl"></i></a>
+                    </div>
+                    <a href="https://guardiamitre.gob.ar" target="_blank" class="text-blue-200 hover:text-white text-sm flex items-center gap-2">
+                        <i class="fas fa-globe"></i> guardiamitre.gob.ar
+                    </a>
+                </div>
+            </div>
+            <div class="border-t border-blue-600 mt-8 pt-6 flex flex-col md:flex-row justify-between items-center gap-4 text-center md:text-left">
+                <p class="text-blue-200 text-sm">© 2026 Municipalidad de Guardia Mitre. Todos los derechos reservados.</p>
+                <p class="text-blue-200 text-xs">Desarrollado por <span class="font-semibold text-white">Gonzalo Baldomé</span></p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../js/main.js"></script>
+    <script>
+        document.getElementById('menu-toggle').addEventListener('click', function() {
+            document.getElementById('main-nav').classList.toggle('hidden');
+        });
+    </script>
+</body>
+</html>
